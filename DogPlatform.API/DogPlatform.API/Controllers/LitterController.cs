@@ -31,7 +31,9 @@ public sealed class LitterController(ILitterService service) : ControllerBase
 
     private static int GetBreederId(HttpRequest request)
     {
-        if (!int.TryParse(request.Headers["X-Breeder-Id"], out var breederId))
+        const string headerKey = "X-Breeder-Id";
+        
+        if (!int.TryParse(request.Headers[headerKey], out var breederId))
         {
             throw new UnauthorizedException();
         }

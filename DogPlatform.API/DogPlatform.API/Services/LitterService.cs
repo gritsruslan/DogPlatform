@@ -29,7 +29,7 @@ public sealed class LitterService(
 
         if (litter.Status != LitterStatus.Approved)
         {
-            throw new LitterNotApprovedException(litterId);
+            throw new LitterNotApprovedException();
         }
         
         var breederBenefit = await dbContext.BreederBenefits
@@ -72,7 +72,7 @@ public sealed class LitterService(
         await notificationService.SendEmail(
             "breeder@example.com", 
             "Litter published", 
-            $"Litter with id {litterId}  has been published");
+            $"Litter with id {litterId} has been published");
     }
 
     public async Task<PagedData<Litter>> GetLitters(
