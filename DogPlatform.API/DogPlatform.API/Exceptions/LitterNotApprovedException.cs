@@ -1,4 +1,4 @@
 ﻿namespace DogPlatform.API.Exceptions;
 
-public sealed class LitterNotApprovedException(int litterId) : 
-    DomainException($"Litter with {litterId} was not found");
+public sealed class LitterNotApprovedException() : 
+    DomainException($"Only approved litters can be published");

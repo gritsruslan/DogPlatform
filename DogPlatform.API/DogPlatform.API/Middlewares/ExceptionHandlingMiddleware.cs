@@ -20,7 +20,7 @@ internal sealed class ExceptionHandlingMiddleware(
 
                 if (string.IsNullOrEmpty(domainException.Message))
                 {
-                    await httpContext.Response.WriteAsync(ex.Message);
+                    await httpContext.Response.CompleteAsync();
                     return;
                 }
                 
