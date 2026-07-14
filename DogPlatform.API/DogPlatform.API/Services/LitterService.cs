@@ -43,6 +43,14 @@ public sealed class LitterService(
         
         if (breederBenefit.UsedCount >= breederBenefit.FreeLimit)
         {
+            await dbContext.AuditLogs.AddAsync(new AuditLog
+            {
+                EntityId = litterId,
+                Action = "Publish attempt failed - limits exceeded",
+                CreatedAt = DateTimeOffset.UtcNow
+            }, cancellationToken);
+            
+            await dbContext.SaveChangesAsync(cancellationToken);
             throw new PublishLimitExceededException();
         }
         
