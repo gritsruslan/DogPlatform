@@ -1,4 +1,5 @@
 ﻿using DogPlatform.API;
+using DogPlatform.API.DTOs;
 using DogPlatform.API.Entities;
 using DogPlatform.API.Exceptions;
 using DogPlatform.API.Services;
@@ -211,6 +212,101 @@ public sealed class LitterServiceTests
                         It.IsAny<string>(),
                         It.IsAny<string>()),
                 Times.Never);
+        }
+    }
+    
+    [Fact]
+    public async Task GetLitters_ShouldReturnFilteredPagedData()
+    {
+        var (db, connection) = await CreateDbContext();
+
+        await using (db)
+        await using (connection)
+        {
+            db.BreederBenefits.AddRange(new BreederBenefit
+            {
+                BreederId = 1,
+                FreeLimit = 3,
+                UsedCount = 0,
+                Litters = []
+            },
+            new BreederBenefit
+            {
+                BreederId = 2,
+                FreeLimit = 10,
+                UsedCount = 10,
+                Litters = []
+            });
+
+            db.Litters.AddRange(
+                new Litter
+                {
+                    Id = 1,
+                    BreederId = 1,
+                    Status = LitterStatus.Approved,
+                    CreatedAt = DateTimeOffset.UtcNow,
+                    Breeder = null!
+                },
+                new Litter
+                {
+                    Id = 2,
+                    BreederId = 1,
+                    Status = LitterStatus.Approved,
+                    CreatedAt = DateTimeOffset.UtcNow,
+                    Breeder = null!
+                },
+                new Litter
+                {
+                    Id = 3,
+                    BreederId = 1,
+                    Status = LitterStatus.Draft,
+                    CreatedAt = DateTimeOffset.UtcNow,
+                    Breeder = null!
+                },
+                new Litter
+                {
+                    Id = 4,
+                    BreederId = 2,
+                    Status = LitterStatus.Approved,
+                    CreatedAt = DateTimeOffset.UtcNow,
+                    Breeder = null!
+                });
+
+            await db.SaveChangesAsync();
+
+            var service = new LitterService(db, _notificationService.Object);
+
+            var result = await service.GetLitters(
+                new GetLittersRequest(LitterStatus.Approved, 1, 10),
+                1,
+                CancellationToken.None);
+
+            Assert.Equal(2, result.Items.Count());
+            Assert.Equal(2, result.TotalCount);
+
+            Assert.All(result.Items, litter =>
+            {
+                Assert.Equal(1, litter.BreederId);
+                Assert.Equal(LitterStatus.Approved, litter.Status);
+            });
+        }
+    }
+    
+    [Fact]
+    public async Task GetLitters_ShouldThrow_WhenBreederDoesNotExist()
+    {
+        var (db, connection) = await CreateDbContext();
+
+        await using (db)
+        await using (connection)
+        {
+            var service = new LitterService(db, _notificationService.Object);
+
+            await Assert.ThrowsAsync<UnauthorizedException>(() =>
+                service.GetLitters(
+                    new GetLittersRequest(null, 1, 10),
+                    1,
+                    CancellationToken.None));
         }
     }
 }
