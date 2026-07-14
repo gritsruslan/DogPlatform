@@ -1,0 +1,29 @@
+# .NET
+
+bin/
+obj/
+/packages/
+
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+publish/
+
+.nuke/temp
+
+# IDEs
+
+.idea/
+.vscode/
+.vs/
+
+riderModule.iml
+_ReSharper.Caches/
+
+# OS
+
+.DS_Store
+Thumbs.db
+Desktop.ini
