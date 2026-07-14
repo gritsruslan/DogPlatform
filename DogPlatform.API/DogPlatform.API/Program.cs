@@ -12,6 +12,12 @@ builder.Services.AddDbContext<DogPlatformDbContext>(options =>
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<DogPlatformDbContext>();
+    await DatabaseSeeder.SeedAsync(dbContext);
+}
+
 app.UseSwagger();
 app.UseSwaggerUI();
 
