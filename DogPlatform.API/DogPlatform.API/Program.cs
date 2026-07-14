@@ -11,7 +11,7 @@ builder.Services
     .AddControllers();
 
 builder.Services.AddDbContext<DogPlatformDbContext>(options =>
-    options.UseInMemoryDatabase("DogPlatformDb")
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
 builder.Services
@@ -23,14 +23,16 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<DogPlatformDbContext>();
+    
+    await dbContext.Database.MigrateAsync();
     await DatabaseSeeder.SeedAsync(dbContext);
 }
+
+app.UseSwagger()
+    .UseSwaggerUI();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.MapControllers();
-
-app.UseSwagger()
-    .UseSwaggerUI();
 
 app.Run();

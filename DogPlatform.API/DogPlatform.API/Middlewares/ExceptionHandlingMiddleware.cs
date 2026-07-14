@@ -17,6 +17,13 @@ internal sealed class ExceptionHandlingMiddleware(
             if (ex is DomainException domainException)
             {
                 httpContext.Response.StatusCode = (int) domainException.ErrorCode;
+
+                if (string.IsNullOrEmpty(domainException.Message))
+                {
+                    await httpContext.Response.WriteAsync(ex.Message);
+                    return;
+                }
+                
                 await httpContext.Response.WriteAsJsonAsync(new 
                 {
                     message = domainException.Message

@@ -1,4 +1,5 @@
 ﻿using DogPlatform.API.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace DogPlatform.API;
 
@@ -6,6 +7,11 @@ internal static class DatabaseSeeder
 {
     public static async Task SeedAsync(DogPlatformDbContext dbContext)
     {
+        if (await dbContext.Litters.AnyAsync())
+        {
+            return;
+        }
+        
         var breederId = 42;
 
         dbContext.BreederBenefits.Add(new BreederBenefit

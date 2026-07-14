@@ -9,19 +9,19 @@ namespace DogPlatform.API.Controllers;
 [Route("/api/litters")]
 public sealed class LitterController(ILitterService service) : ControllerBase
 {
-    [Route("{litterId:int}/publish")]
+    [HttpPost("{litterId:int}/publish")]
     public async Task<IActionResult> PublishLitter(
         [FromRoute] int litterId,
         CancellationToken cancellationToken)
     {
-        var breederId = GetBreederId();
+        var breederId = GetBreederId(Request);
         await service.PublishLitter(litterId, breederId, cancellationToken);
         return Ok();
     }
 
-    private int GetBreederId()
+    private static int GetBreederId(HttpRequest request)
     {
-        if (!int.TryParse(Request.Headers["X-Breeder-Id"], out var breederId))
+        if (!int.TryParse(request.Headers["X-Breeder-Id"], out var breederId))
         {
             throw new UnauthorizedException();
         }
