@@ -1,4 +1,4 @@
 ﻿namespace DogPlatform.API.Exceptions;
 
-public sealed class LitterNotApprovedException() : 
-    DomainException("You have reached your free publication limit");
+public sealed class LitterNotApprovedException(int litterId) : 
+    DomainException($"Litter with {litterId} was not found");
