@@ -9,4 +9,6 @@ public sealed class AuditLog
     public required string Action { get; set; }
     
     public DateTimeOffset CreatedAt { get; set; }
+
+    public const int ActionMaxLength = 200;
 }

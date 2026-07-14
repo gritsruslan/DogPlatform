@@ -7,4 +7,6 @@ public sealed class BreederBenefit
     public int FreeLimit { get; set; }
     
     public int UsedCount { get; set; }
+    
+    public required ICollection<Litter> Litters { get; set; }
 }

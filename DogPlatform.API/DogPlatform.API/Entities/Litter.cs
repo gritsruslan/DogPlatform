@@ -6,6 +6,8 @@ public sealed class Litter
     
     public int BreederId { get; set; }
     
+    public required BreederBenefit Breeder { get; set; }
+    
     public required string Status { get; set; }
 
     public DateTimeOffset CreatedAt { get; set; }

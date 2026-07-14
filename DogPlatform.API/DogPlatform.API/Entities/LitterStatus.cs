@@ -8,5 +8,7 @@ public static class LitterStatus
     
     public const string Approved = "Approved";
     
-    public const string Rejected = "Published";
+    public const string Published = "Published";
+
+    public const int MaxLength = 30;
 }
